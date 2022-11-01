@@ -48,6 +48,9 @@ func (x *Xlsx) NewFile() {
 }
 
 func (x *Xlsx) SetSheetData(sheetName string, header []string, data [][]string) error {
+	if len(header) < 1 {
+		return errors.New("header is empty")
+	}
 	index := x.file.GetSheetIndex(sheetName)
 	if index == -1 {
 		index = x.file.NewSheet(sheetName)
@@ -61,18 +64,16 @@ func (x *Xlsx) SetSheetData(sheetName string, header []string, data [][]string) 
 	}
 
 	// set style and width
-	if len(data) > 0 {
-		for i := 0; i < len(data[0]); i++ {
-			width := len(data[0][i])
-			if width > 30 {
-				width = 30
-			}
-			end, err := excelize.ColumnNumberToName(i + 1)
-			if err != nil {
-				return err
-			}
-			x.file.SetColWidth(sheetName, end, end, float64(width))
+	for i := 0; i < len(header); i++ {
+		width := len(header[i])
+		if width > 30 {
+			width = 30
 		}
+		end, err := excelize.ColumnNumberToName(i + 1)
+		if err != nil {
+			return err
+		}
+		x.file.SetColWidth(sheetName, end, end, float64(width))
 	}
 	lineStyle, _ := x.file.NewStyle(`{"alignment":{"horizontal":"center","vertical":"center"}}`)
 	topStyle, _ := x.file.NewStyle(`{"font":{"bold":true},"alignment":{"horizontal":"center","vertical":"center"}}`)
