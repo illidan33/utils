@@ -1,6 +1,6 @@
-module utils
+module github.com/illidan33/utils
 
-go 1.17
+go 1.19
 
 require (
 	github.com/extrame/xls v0.0.1
